@@ -1,0 +1,9 @@
+syntax = "proto2";
+package sigma.software.leovegas.drugstore.api.protobuf;
+
+option java_package = "sigma.software.leovegas.drugstore.api.protobuf";
+option java_outer_classname = "Proto2";
+
+message InvoiceDetails {
+  repeated string name = 1;
+}

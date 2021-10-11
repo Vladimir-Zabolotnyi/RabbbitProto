@@ -1,0 +1,39 @@
+spring:
+  output.ansi.enabled: always
+  application.name: drugstore
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:13017/db_product?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+#    username: admin
+#    password: admin
+#    type: com.zaxxer.hikari.HikariDataSource
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL5Dialect
+#        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+  cloud:
+    stream:
+      function:
+        definition: createProductEventHandler
+      bindings:
+        createProductEventPublisher-out-0:
+          destination: create.outcome.invoice.event.stream.exchange
+          group: ${spring.application.name}@create.outcome.invoice.event.stream.exchange
+          content-type: application/x-protobuf
+        createProductEventHandler-in-0:
+          destination: create.outcome.invoice.event.stream.exchange
+          group: ${spring.application.name}@create.outcome.invoice.event.stream.exchange
+          consumer:
+            bind-queue: true
+            requeue-rejected: false
+            queue-name-group-only: true
+          binder: rabbit
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
